@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>
+    {% if login_page %}
+      Staff Login — {{ firm_name }}
+    {% else %}
+      Admin Dashboard — {{ firm_name }}
+    {% endif %}
+  </title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap"
+    rel="stylesheet"
+  />
+
+  <!-- Admin Styles -->
+  <link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='css/admin.css') }}"
+  />
+</head>
+
+<body class="{% if login_page %}login-body{% else %}dashboard-body{% endif %}">
+
+
+  <!-- ==========================================================
+       LOGIN PAGE
+       Shown when:  login_page=True is passed from app.py
+       Hidden when: admin session is active (dashboard shown)
+  =========================================================== -->
+  {% if login_page %}
+
+  <div class="login-wrapper" role="main">
+
+    <div class="login-card">
+
+      <!-- Firm Branding -->
+      <div class="login-header">
+        <div class="login-logo-mark" aria-hidden="true">
+          &#9878;
+        </div>
+        <h1 class="login-firm-name">{{ firm_name }}</h1>
+        <p class="login-subtitle">Staff Portal</p>
+      </div>
+
+      <!-- Error Message -->
+      {% if error %}
+      <div class="login-error" role="alert" aria-live="polite">
+        <span class="login-error-icon" aria-hidden="true">&#9888;</span>
+        {{ error }}
+      </div>
+      {% endif %}
+
+      <!-- Login Form -->
+      <form
+        class="login-form"
+        method="POST"
+        action="/admin/login"
+        aria-label="Staff login form"
+      >
+        <div class="form-group">
+          <label class="form-label" for="password">
+            Password
+          </label>
+          <input
+            class="form-input"
+            type="password"
+            id="password"
+            name="password"
+            placeholder="Enter staff password"
+            required
+            autocomplete="current-password"
+            autofocus
+          />
+        </div>
+
+        <button
+          type="submit"
+          class="btn-login"
+          aria-label="Sign in to staff portal"
+        >
+          Sign In &rarr;
+        </button>
+      </form>
+
+      <!-- Footer Note -->
+      <p class="login-footer-note">
+        Access restricted to authorized staff only.<br />
+        <a href="/">&#8592; Return to firm website</a>
+      </p>
+
+    </div>
+
+  </div>
+
+
+  <!-- ==========================================================
+       DASHBOARD PAGE
+       Shown when: admin session is active
+  =========================================================== -->
+  {% else %}
+
+  <!-- ----------------------------------------------------------
+       TOP NAVIGATION BAR
+  ---------------------------------------------------------- -->
+  <header class="admin-navbar" role="banner">
+    <div class="admin-navbar-inner">
+
+      <!-- Brand -->
+      <div class="admin-brand">
+        <div class="admin-brand-mark" aria-hidden="true">&#9878;</div>
+        <div class="admin-brand-text">
+          <span class="admin-brand-name">{{ firm_name }}</span>
+          <span class="admin-brand-tag">Intake Dashboard</span>
+        </div>
+      </div>
+
+      <!-- Nav Actions -->
+      <nav class="admin-nav-actions" aria-label="Admin navigation">
+        <span
+          class="admin-nav-status"
+          id="lastRefreshed"
+          aria-live="polite"
+          aria-label="Last refreshed time"
+        >
+          Loading&hellip;
+        </span>
+
+        <button
+          class="btn-refresh"
+          id="refreshBtn"
+          onclick="refreshDashboard()"
+          aria-label="Refresh dashboard data"
+          title="Refresh data"
+        >
+          &#8635; Refresh
+        </button>
+
+        
+        <a href="/admin/logout"
+          class="btn-logout"
+          aria-label="Sign out of admin dashboard"
+        >
+          Sign Out
+        </a>
+      </nav>
+
+    </div>
+  </header>
+
+
+  <!-- ----------------------------------------------------------
+       MAIN CONTENT
+  ---------------------------------------------------------- -->
+  <main class="admin-main" role="main" id="mainContent">
+    <div class="admin-container">
+
+
+      <!-- ======================================================
+           PAGE TITLE ROW
+      ====================================================== -->
+      <div class="page-title-row">
+        <div>
+          <h1 class="page-title">Lead Management</h1>
+          <p class="page-subtitle">
+            All intake leads captured by the AI chat assistant
+          </p>
+        </div>
+        <div class="page-title-actions">
+          <a href="/"
+            class="btn-view-site"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="View firm website in new tab">
+            View Website &#8599;
+          </a>
+        </div>
+      </div>
+
+
+      <!-- ======================================================
+           STATS CARDS
+           Populated dynamically by admin.js → loadStats()
+      ====================================================== -->
+      <section
+        class="stats-grid"
+        aria-label="Lead statistics"
+        role="region"
+        id="statsGrid"
+      >
+
+        <!-- Total Leads -->
+        <div class="stat-card stat-card--total" role="article">
+          <div class="stat-card-icon" aria-hidden="true">&#128203;</div>
+          <div class="stat-card-body">
+            <div
+              class="stat-card-number"
+              id="statTotal"
+              aria-label="Total leads"
+            >
+              &mdash;
+            </div>
+            <div class="stat-card-label">Total Leads</div>
+          </div>
+        </div>
+
+        <!-- Hot Leads -->
+        <div class="stat-card stat-card--hot" role="article">
+          <div class="stat-card-icon" aria-hidden="true">&#128293;</div>
+          <div class="stat-card-body">
+            <div
+              class="stat-card-number"
+              id="statHot"
+              aria-label="Hot leads"
+            >
+              &mdash;
+            </div>
+            <div class="stat-card-label">Hot Leads</div>
+          </div>
+        </div>
+
+        <!-- Warm Leads -->
+        <div class="stat-card stat-card--warm" role="article">
+          <div class="stat-card-icon" aria-hidden="true">&#127777;</div>
+          <div class="stat-card-body">
+            <div
+              class="stat-card-number"
+              id="statWarm"
+              aria-label="Warm leads"
+            >
+              &mdash;
+            </div>
+            <div class="stat-card-label">Warm Leads</div>
+          </div>
+        </div>
+
+        <!-- Cold Leads -->
+        <div class="stat-card stat-card--cold" role="article">
+          <div class="stat-card-icon" aria-hidden="true">&#10052;</div>
+          <div class="stat-card-body">
+            <div
+              class="stat-card-number"
+              id="statCold"
+              aria-label="Cold leads"
+            >
+              &mdash;
+            </div>
+            <div class="stat-card-label">Cold Leads</div>
+          </div>
+        </div>
+
+        <!-- New (Uncontacted) -->
+        <div class="stat-card stat-card--new" role="article">
+          <div class="stat-card-icon" aria-hidden="true">&#128276;</div>
+          <div class="stat-card-body">
+            <div
+              class="stat-card-number"
+              id="statNew"
+              aria-label="New uncontacted leads"
+            >
+              &mdash;
+            </div>
+            <div class="stat-card-label">New</div>
+          </div>
+        </div>
+
+        <!-- Contacted -->
+        <div class="stat-card stat-card--contacted" role="article">
+          <div class="stat-card-icon" aria-hidden="true">&#128222;</div>
+          <div class="stat-card-body">
+            <div
+              class="stat-card-number"
+              id="statContacted"
+              aria-label="Contacted leads"
+            >
+              &mdash;
+            </div>
+            <div class="stat-card-label">Contacted</div>
+          </div>
+        </div>
+
+        <!-- Closed -->
+        <div class="stat-card stat-card--closed" role="article">
+          <div class="stat-card-icon" aria-hidden="true">&#10003;</div>
+          <div class="stat-card-body">
+            <div
+              class="stat-card-number"
+              id="statClosed"
+              aria-label="Closed leads"
+            >
+              &mdash;
+            </div>
+            <div class="stat-card-label">Closed</div>
+          </div>
+        </div>
+
+      </section>
+
+
+      <!-- ======================================================
+           LEADS TABLE SECTION
+      ====================================================== -->
+      <section
+        class="leads-section"
+        aria-label="Leads table"
+        role="region"
+      >
+
+        <!-- Table Header Row -->
+        <div class="leads-header">
+          <div class="leads-header-left">
+            <h2 class="leads-title">All Leads</h2>
+            <span
+              class="leads-count-badge"
+              id="leadsCountBadge"
+              aria-label="Total lead count"
+            >
+              0
+            </span>
+          </div>
+
+          <div class="leads-header-right">
+
+            <!-- Score Filter -->
+            <div class="filter-group">
+              <label class="filter-label" for="filterScore">
+                Score
+              </label>
+              <select
+                class="filter-select"
+                id="filterScore"
+                onchange="applyFilters()"
+                aria-label="Filter by lead score"
+              >
+                <option value="">All Scores</option>
+                <option value="Hot">Hot</option>
+                <option value="Warm">Warm</option>
+                <option value="Cold">Cold</option>
+              </select>
+            </div>
+
+            <!-- Status Filter -->
+            <div class="filter-group">
+              <label class="filter-label" for="filterStatus">
+                Status
+              </label>
+              <select
+                class="filter-select"
+                id="filterStatus"
+                onchange="applyFilters()"
+                aria-label="Filter by lead status"
+              >
+                <option value="">All Statuses</option>
+                <option value="new">New</option>
+                <option value="contacted">Contacted</option>
+                <option value="closed">Closed</option>
+              </select>
+            </div>
+
+          </div>
+        </div>
+
+
+        <!-- Loading State -->
+        <div
+          class="table-loading"
+          id="tableLoading"
+          role="status"
+          aria-live="polite"
+          aria-label="Loading leads"
+        >
+          <div class="loading-spinner" aria-hidden="true"></div>
+          <span>Loading leads&hellip;</span>
+        </div>
+
+
+        <!-- Error State -->
+        <div
+          class="table-error"
+          id="tableError"
+          role="alert"
+          aria-live="assertive"
+          style="display: none;"
+        >
+          <span class="table-error-icon" aria-hidden="true">&#9888;</span>
+          <span id="tableErrorMsg">
+            Failed to load leads. Please refresh the page.
+          </span>
+        </div>
+
+
+        <!-- Empty State -->
+        <div
+          class="table-empty"
+          id="tableEmpty"
+          style="display: none;"
+          role="status"
+          aria-live="polite"
+        >
+          <div class="table-empty-icon" aria-hidden="true">&#128203;</div>
+          <h3 class="table-empty-title">No leads yet</h3>
+          <p class="table-empty-body">
+            Leads captured by the chat widget will appear here.
+            Share your website to start collecting inquiries.
+          </p>
+          <a href="/" target="_blank" class="btn-view-site">
+            View Widget Demo &#8599;
+          </a>
+        </div>
+
+
+        <!-- Leads Table -->
+        <div
+          class="table-wrapper"
+          id="tableWrapper"
+          style="display: none;"
+          role="region"
+          aria-label="Leads data table"
+        >
+          <table
+            class="leads-table"
+            id="leadsTable"
+            aria-label="Intake leads"
+          >
+            <thead>
+              <tr>
+                <th scope="col" class="col-id">#</th>
+                <th scope="col" class="col-name">Name</th>
+                <th scope="col" class="col-contact">Contact</th>
+                <th scope="col" class="col-issue">Legal Issue</th>
+                <th scope="col" class="col-summary">AI Summary</th>
+                <th scope="col" class="col-score">Score</th>
+                <th scope="col" class="col-status">Status</th>
+                <th scope="col" class="col-date">Received</th>
+                <th scope="col" class="col-zapier">Zapier</th>
+              </tr>
+            </thead>
+            <tbody id="leadsTableBody">
+              <!-- Rows injected by admin.js → renderTable() -->
+            </tbody>
+          </table>
+        </div>
+
+
+        <!-- Toast Notification (status update feedback) -->
+        <div
+          class="toast"
+          id="toast"
+          role="status"
+          aria-live="polite"
+          aria-atomic="true"
+          style="display: none;"
+        >
+          <span id="toastMessage"></span>
+        </div>
+
+
+      </section>
+
+
+      <!-- ======================================================
+           LEAD DETAIL MODAL
+           Opened when user clicks "View" on a lead row.
+           Populated by admin.js → openLeadModal()
+      ====================================================== -->
+      <div
+        class="modal-overlay"
+        id="leadModal"
+        style="display: none;"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="modalLeadName"
+        aria-describedby="modalLeadSummary"
+        tabindex="-1"
+      >
+        <div class="modal-card">
+
+          <!-- Modal Header -->
+          <div class="modal-header">
+            <div>
+              <h2 class="modal-title" id="modalLeadName">Lead Detail</h2>
+              <p class="modal-subtitle" id="modalLeadDate"></p>
+            </div>
+            <button
+              class="modal-close"
+              onclick="closeLeadModal()"
+              aria-label="Close lead detail"
+            >
+              &times;
+            </button>
+          </div>
+
+          <!-- Modal Body -->
+          <div class="modal-body">
+
+            <!-- Score + Status Row -->
+            <div class="modal-badges" id="modalBadges">
+              <!-- Injected by admin.js -->
+            </div>
+
+            <!-- Contact Details -->
+            <div class="modal-section">
+              <h3 class="modal-section-title">Contact Information</h3>
+              <div class="modal-detail-grid">
+                <div class="modal-detail-item">
+                  <span class="modal-detail-label">Full Name</span>
+                  <span
+                    class="modal-detail-value"
+                    id="modalName"
+                  ></span>
+                </div>
+                <div class="modal-detail-item">
+                  <span class="modal-detail-label">Email</span>
+                  <span
+                    class="modal-detail-value"
+                    id="modalEmail"
+                  ></span>
+                </div>
+                <div class="modal-detail-item">
+                  <span class="modal-detail-label">Phone</span>
+                  <span
+                    class="modal-detail-value"
+                    id="modalPhone"
+                  ></span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Legal Issue -->
+            <div class="modal-section">
+              <h3 class="modal-section-title">Legal Issue</h3>
+              <p
+                class="modal-text-block"
+                id="modalLegalIssue"
+              ></p>
+            </div>
+
+            <!-- AI Summary -->
+            <div class="modal-section">
+              <h3 class="modal-section-title">
+                AI Summary
+                <span class="modal-ai-badge" aria-label="AI generated">
+                  AI Generated
+                </span>
+              </h3>
+              <p
+                class="modal-text-block modal-text-block--ai"
+                id="modalSummary"
+              ></p>
+            </div>
+
+            <!-- Status Update -->
+            <div class="modal-section">
+              <h3 class="modal-section-title">Update Status</h3>
+              <div class="modal-status-row">
+                <select
+                  class="filter-select modal-status-select"
+                  id="modalStatusSelect"
+                  aria-label="Update lead status"
+                >
+                  <option value="new">New</option>
+                  <option value="contacted">Contacted</option>
+                  <option value="closed">Closed</option>
+                </select>
+                <button
+                  class="btn-update-status"
+                  id="modalUpdateBtn"
+                  onclick="updateStatusFromModal()"
+                  aria-label="Save status update"
+                >
+                  Save Status
+                </button>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Modal Footer -->
+          <div class="modal-footer">
+            <button
+              class="btn-modal-close"
+              onclick="closeLeadModal()"
+              aria-label="Close modal"
+            >
+              Close
+            </button>
+          </div>
+
+        </div>
+      </div>
+      <!-- END MODAL -->
+
+
+    </div>
+    <!-- END admin-container -->
+  </main>
+
+
+  <!-- ----------------------------------------------------------
+       FOOTER
+  ---------------------------------------------------------- -->
+  <footer class="admin-footer" role="contentinfo">
+    <div class="admin-container admin-footer-inner">
+      <span>
+        &copy; <span id="footerYear"></span>
+        {{ firm_name }} &mdash; Staff Portal
+      </span>
+      <span class="admin-footer-right">
+        <a href="/" target="_blank" rel="noopener noreferrer">
+          View Website &#8599;
+        </a>
+      </span>
+    </div>
+  </footer>
+
+
+  {% endif %}
+  <!-- END dashboard / login conditional -->
+
+
+  <!-- ==========================================================
+       SCRIPTS
+       Only loaded on dashboard page (not login page)
+  =========================================================== -->
+  {% if not login_page %}
+  <script
+    src="{{ url_for('static', filename='js/admin.js') }}"
+    defer
+  ></script>
+  <script>
+    // --- Footer year ---
+    document.getElementById('footerYear').textContent =
+      new Date().getFullYear();
+  </script>
+  {% endif %}
+
+
+</body>
+</html>

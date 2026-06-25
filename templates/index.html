@@ -1,0 +1,1577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="{{ firm_name }} — Experienced legal representation you can trust. Contact us today for a free consultation." />
+  <title>{{ firm_name }} | Trusted Legal Representation</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+  <!-- Widget Styles -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/widget.css') }}" />
+
+  <style>
+    /* =========================================================
+       CSS VARIABLES & RESET
+    ========================================================= */
+    :root {
+      --navy:        #1a2e4a;
+      --navy-dark:   #0f1e32;
+      --navy-light:  #243d5e;
+      --gold:        #c9a84c;
+      --gold-light:  #e2c06e;
+      --gold-dark:   #a8882e;
+      --white:       #ffffff;
+      --off-white:   #f8f6f1;
+      --gray-light:  #e8e8e8;
+      --gray:        #888888;
+      --gray-dark:   #444444;
+      --text:        #2c2c2c;
+
+      --font-serif:  'Playfair Display', Georgia, serif;
+      --font-sans:   'Inter', system-ui, sans-serif;
+
+      --shadow-sm:   0 2px 8px rgba(0,0,0,0.08);
+      --shadow-md:   0 4px 20px rgba(0,0,0,0.12);
+      --shadow-lg:   0 8px 40px rgba(0,0,0,0.18);
+
+      --radius:      6px;
+      --max-width:   1100px;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family:      var(--font-sans);
+      color:            var(--text);
+      background-color: var(--white);
+      line-height:      1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    img { max-width: 100%; display: block; }
+
+    a {
+      color:           var(--gold);
+      text-decoration: none;
+      transition:      color 0.2s ease;
+    }
+    a:hover { color: var(--gold-light); }
+
+    .container {
+      max-width:   var(--max-width);
+      margin:      0 auto;
+      padding:     0 24px;
+    }
+
+    .section-label {
+      font-family:    var(--font-sans);
+      font-size:      0.75rem;
+      font-weight:    600;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color:          var(--gold);
+      margin-bottom:  12px;
+    }
+
+    .section-title {
+      font-family:   var(--font-serif);
+      font-size:     clamp(1.8rem, 4vw, 2.6rem);
+      font-weight:   700;
+      color:         var(--navy);
+      line-height:   1.2;
+      margin-bottom: 16px;
+    }
+
+    .section-subtitle {
+      font-size:   1.05rem;
+      color:       var(--gray-dark);
+      max-width:   580px;
+      line-height: 1.7;
+    }
+
+    /* =========================================================
+       NAVIGATION
+    ========================================================= */
+    .navbar {
+      position:         fixed;
+      top:              0;
+      left:             0;
+      right:            0;
+      z-index:          900;
+      background:       rgba(15, 30, 50, 0.97);
+      backdrop-filter:  blur(8px);
+      border-bottom:    1px solid rgba(201, 168, 76, 0.2);
+    }
+
+    .navbar-inner {
+      display:         flex;
+      align-items:     center;
+      justify-content: space-between;
+      height:          70px;
+    }
+
+    .navbar-brand {
+      display:     flex;
+      align-items: center;
+      gap:         12px;
+    }
+
+    .navbar-logo-mark {
+      width:            40px;
+      height:           40px;
+      background:       var(--gold);
+      border-radius:    50%;
+      display:          flex;
+      align-items:      center;
+      justify-content:  center;
+      font-family:      var(--font-serif);
+      font-size:        1rem;
+      font-weight:      700;
+      color:            var(--navy-dark);
+      flex-shrink:      0;
+    }
+
+    .navbar-firm-name {
+      font-family: var(--font-serif);
+      font-size:   1.1rem;
+      font-weight: 600;
+      color:       var(--white);
+      line-height: 1.2;
+    }
+
+    .navbar-tagline {
+      font-size:   0.65rem;
+      color:       var(--gold);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .navbar-nav {
+      display:     flex;
+      align-items: center;
+      gap:         32px;
+      list-style:  none;
+    }
+
+    .navbar-nav a {
+      font-size:      0.875rem;
+      font-weight:    500;
+      color:          rgba(255,255,255,0.8);
+      letter-spacing: 0.03em;
+      transition:     color 0.2s;
+    }
+    .navbar-nav a:hover { color: var(--gold); }
+
+    .navbar-cta {
+      background:    var(--gold);
+      color:         var(--navy-dark) !important;
+      padding:       9px 20px;
+      border-radius: var(--radius);
+      font-weight:   600 !important;
+      transition:    background 0.2s !important;
+    }
+    .navbar-cta:hover {
+      background: var(--gold-light) !important;
+      color:      var(--navy-dark) !important;
+    }
+
+    .navbar-toggle {
+      display:          none;
+      background:       none;
+      border:           none;
+      cursor:           pointer;
+      padding:          8px;
+      flex-direction:   column;
+      gap:              5px;
+    }
+    .navbar-toggle span {
+      display:          block;
+      width:            24px;
+      height:           2px;
+      background:       var(--white);
+      border-radius:    2px;
+      transition:       all 0.3s;
+    }
+
+    /* =========================================================
+       HERO SECTION
+    ========================================================= */
+    .hero {
+      min-height:       100vh;
+      background:       linear-gradient(
+                          135deg,
+                          var(--navy-dark)  0%,
+                          var(--navy)       50%,
+                          var(--navy-light) 100%
+                        );
+      display:          flex;
+      align-items:      center;
+      padding:          120px 0 80px;
+      position:         relative;
+      overflow:         hidden;
+    }
+
+    /* Decorative background elements */
+    .hero::before {
+      content:       '';
+      position:      absolute;
+      top:           -100px;
+      right:         -100px;
+      width:         600px;
+      height:        600px;
+      background:    radial-gradient(circle, rgba(201,168,76,0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero::after {
+      content:       '';
+      position:      absolute;
+      bottom:        -80px;
+      left:          -80px;
+      width:         400px;
+      height:        400px;
+      background:    radial-gradient(circle, rgba(201,168,76,0.05) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-content {
+      position:   relative;
+      z-index:    1;
+      max-width:  680px;
+    }
+
+    .hero-badge {
+      display:        inline-flex;
+      align-items:    center;
+      gap:            8px;
+      background:     rgba(201, 168, 76, 0.15);
+      border:         1px solid rgba(201, 168, 76, 0.3);
+      border-radius:  20px;
+      padding:        6px 16px;
+      margin-bottom:  28px;
+    }
+    .hero-badge-dot {
+      width:         8px;
+      height:        8px;
+      background:    var(--gold);
+      border-radius: 50%;
+    }
+    .hero-badge span {
+      font-size:      0.78rem;
+      font-weight:    500;
+      color:          var(--gold-light);
+      letter-spacing: 0.05em;
+    }
+
+    .hero-title {
+      font-family:   var(--font-serif);
+      font-size:     clamp(2.2rem, 5vw, 3.8rem);
+      font-weight:   700;
+      color:         var(--white);
+      line-height:   1.15;
+      margin-bottom: 20px;
+    }
+    .hero-title em {
+      color:          var(--gold);
+      font-style:     normal;
+    }
+
+    .hero-subtitle {
+      font-size:     1.1rem;
+      color:         rgba(255,255,255,0.75);
+      line-height:   1.75;
+      margin-bottom: 40px;
+      max-width:     540px;
+    }
+
+    .hero-actions {
+      display:   flex;
+      gap:       16px;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      display:       inline-flex;
+      align-items:   center;
+      gap:           8px;
+      background:    var(--gold);
+      color:         var(--navy-dark);
+      padding:       14px 28px;
+      border-radius: var(--radius);
+      font-weight:   600;
+      font-size:     0.95rem;
+      border:        none;
+      cursor:        pointer;
+      transition:    all 0.2s ease;
+      text-decoration: none;
+    }
+    .btn-primary:hover {
+      background:  var(--gold-light);
+      color:       var(--navy-dark);
+      transform:   translateY(-1px);
+      box-shadow:  var(--shadow-md);
+    }
+
+    .btn-secondary {
+      display:       inline-flex;
+      align-items:   center;
+      gap:           8px;
+      background:    transparent;
+      color:         var(--white);
+      padding:       14px 28px;
+      border-radius: var(--radius);
+      font-weight:   500;
+      font-size:     0.95rem;
+      border:        1px solid rgba(255,255,255,0.3);
+      cursor:        pointer;
+      transition:    all 0.2s ease;
+      text-decoration: none;
+    }
+    .btn-secondary:hover {
+      border-color: var(--gold);
+      color:        var(--gold);
+      transform:    translateY(-1px);
+    }
+
+    .hero-stats {
+      display:        flex;
+      gap:            40px;
+      margin-top:     56px;
+      padding-top:    40px;
+      border-top:     1px solid rgba(255,255,255,0.1);
+      flex-wrap:      wrap;
+    }
+    .hero-stat-number {
+      font-family:   var(--font-serif);
+      font-size:     2rem;
+      font-weight:   700;
+      color:         var(--gold);
+      line-height:   1;
+    }
+    .hero-stat-label {
+      font-size:   0.8rem;
+      color:       rgba(255,255,255,0.55);
+      margin-top:  4px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    /* =========================================================
+       TRUST BAR
+    ========================================================= */
+    .trust-bar {
+      background:  var(--navy-dark);
+      padding:     18px 0;
+      border-top:  1px solid rgba(201,168,76,0.15);
+      border-bottom: 1px solid rgba(201,168,76,0.15);
+    }
+
+    .trust-bar-inner {
+      display:         flex;
+      align-items:     center;
+      justify-content: center;
+      gap:             40px;
+      flex-wrap:       wrap;
+    }
+
+    .trust-item {
+      display:     flex;
+      align-items: center;
+      gap:         10px;
+      color:       rgba(255,255,255,0.65);
+      font-size:   0.85rem;
+      font-weight: 500;
+    }
+    .trust-item-icon {
+      color:     var(--gold);
+      font-size: 1rem;
+    }
+
+    /* =========================================================
+       ABOUT SECTION
+    ========================================================= */
+    .about {
+      padding:    100px 0;
+      background: var(--white);
+    }
+
+    .about-grid {
+      display:   grid;
+      grid-template-columns: 1fr 1fr;
+      gap:       64px;
+      align-items: center;
+    }
+
+    .about-visual {
+      position:      relative;
+      border-radius: 8px;
+      overflow:      hidden;
+    }
+
+    .about-image-placeholder {
+      width:         100%;
+      aspect-ratio:  4/3;
+      background:    linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
+      border-radius: 8px;
+      display:       flex;
+      flex-direction: column;
+      align-items:   center;
+      justify-content: center;
+      gap:           12px;
+    }
+    .about-image-placeholder-icon {
+      font-size: 3rem;
+      opacity:   0.4;
+    }
+    .about-image-placeholder-text {
+      color:      rgba(255,255,255,0.4);
+      font-size:  0.85rem;
+      font-style: italic;
+    }
+
+    .about-badge {
+      position:      absolute;
+      bottom:        -20px;
+      right:         -20px;
+      background:    var(--gold);
+      color:         var(--navy-dark);
+      padding:       20px 24px;
+      border-radius: 8px;
+      text-align:    center;
+      box-shadow:    var(--shadow-lg);
+    }
+    .about-badge-number {
+      font-family: var(--font-serif);
+      font-size:   2rem;
+      font-weight: 700;
+      line-height: 1;
+    }
+    .about-badge-text {
+      font-size:   0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-top:  4px;
+    }
+
+    .about-content { padding-right: 16px; }
+
+    .about-body {
+      color:       var(--gray-dark);
+      font-size:   1rem;
+      line-height: 1.8;
+      margin-bottom: 16px;
+    }
+
+    .about-values {
+      margin-top:  28px;
+      display:     flex;
+      flex-direction: column;
+      gap:         14px;
+    }
+    .about-value-item {
+      display:     flex;
+      align-items: flex-start;
+      gap:         12px;
+    }
+    .about-value-icon {
+      width:         32px;
+      height:        32px;
+      background:    rgba(201,168,76,0.12);
+      border-radius: 50%;
+      display:       flex;
+      align-items:   center;
+      justify-content: center;
+      color:         var(--gold);
+      font-size:     0.85rem;
+      flex-shrink:   0;
+      margin-top:    2px;
+    }
+    .about-value-text strong {
+      display:    block;
+      color:      var(--navy);
+      font-size:  0.9rem;
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+    .about-value-text span {
+      color:     var(--gray);
+      font-size: 0.85rem;
+    }
+
+    /* =========================================================
+       PRACTICE AREAS
+    ========================================================= */
+    .practice-areas {
+      padding:    100px 0;
+      background: var(--off-white);
+    }
+
+    .practice-areas-header {
+      text-align:    center;
+      margin-bottom: 60px;
+    }
+    .practice-areas-header .section-subtitle {
+      margin: 0 auto;
+    }
+
+    .practice-grid {
+      display:               grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap:                   24px;
+    }
+
+    .practice-card {
+      background:    var(--white);
+      border-radius: 8px;
+      padding:       36px 30px;
+      border:        1px solid var(--gray-light);
+      transition:    all 0.25s ease;
+      position:      relative;
+      overflow:      hidden;
+    }
+    .practice-card::before {
+      content:    '';
+      position:   absolute;
+      top:        0;
+      left:       0;
+      right:      0;
+      height:     3px;
+      background: var(--gold);
+      transform:  scaleX(0);
+      transition: transform 0.25s ease;
+    }
+    .practice-card:hover {
+      transform:  translateY(-4px);
+      box-shadow: var(--shadow-md);
+      border-color: transparent;
+    }
+    .practice-card:hover::before { transform: scaleX(1); }
+
+    .practice-card-icon {
+      width:         52px;
+      height:        52px;
+      background:    rgba(26, 46, 74, 0.06);
+      border-radius: 10px;
+      display:       flex;
+      align-items:   center;
+      justify-content: center;
+      font-size:     1.4rem;
+      margin-bottom: 20px;
+      transition:    background 0.25s;
+    }
+    .practice-card:hover .practice-card-icon {
+      background: rgba(201, 168, 76, 0.12);
+    }
+
+    .practice-card-title {
+      font-family:   var(--font-serif);
+      font-size:     1.2rem;
+      font-weight:   600;
+      color:         var(--navy);
+      margin-bottom: 10px;
+    }
+
+    .practice-card-body {
+      color:       var(--gray-dark);
+      font-size:   0.9rem;
+      line-height: 1.7;
+      margin-bottom: 20px;
+    }
+
+    .practice-card-list {
+      list-style:    none;
+      display:       flex;
+      flex-direction: column;
+      gap:           6px;
+    }
+    .practice-card-list li {
+      font-size:   0.83rem;
+      color:       var(--gray);
+      padding-left: 16px;
+      position:    relative;
+    }
+    .practice-card-list li::before {
+      content:   '›';
+      position:  absolute;
+      left:      0;
+      color:     var(--gold);
+      font-weight: 700;
+    }
+
+    /* =========================================================
+       PROCESS SECTION
+    ========================================================= */
+    .process {
+      padding:    100px 0;
+      background: var(--navy);
+    }
+
+    .process-header {
+      text-align:    center;
+      margin-bottom: 60px;
+    }
+    .process-header .section-title { color: var(--white); }
+    .process-header .section-subtitle {
+      color:  rgba(255,255,255,0.65);
+      margin: 0 auto;
+    }
+
+    .process-steps {
+      display:               grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap:                   32px;
+      position:              relative;
+    }
+
+    .process-step {
+      text-align: center;
+      padding:    32px 20px;
+    }
+
+    .process-step-number {
+      width:         60px;
+      height:        60px;
+      background:    rgba(201,168,76,0.15);
+      border:        2px solid var(--gold);
+      border-radius: 50%;
+      display:       flex;
+      align-items:   center;
+      justify-content: center;
+      font-family:   var(--font-serif);
+      font-size:     1.4rem;
+      font-weight:   700;
+      color:         var(--gold);
+      margin:        0 auto 20px;
+    }
+
+    .process-step-title {
+      font-family:   var(--font-serif);
+      font-size:     1.1rem;
+      color:         var(--white);
+      font-weight:   600;
+      margin-bottom: 10px;
+    }
+
+    .process-step-body {
+      color:       rgba(255,255,255,0.6);
+      font-size:   0.875rem;
+      line-height: 1.7;
+    }
+
+    /* =========================================================
+       CONTACT SECTION
+    ========================================================= */
+    .contact {
+      padding:    100px 0;
+      background: var(--white);
+    }
+
+    .contact-grid {
+      display:   grid;
+      grid-template-columns: 1fr 1fr;
+      gap:       64px;
+      align-items: start;
+    }
+
+    .contact-info { padding-top: 8px; }
+
+    .contact-item {
+      display:       flex;
+      align-items:   flex-start;
+      gap:           16px;
+      margin-bottom: 28px;
+    }
+    .contact-item-icon {
+      width:         44px;
+      height:        44px;
+      background:    rgba(26,46,74,0.06);
+      border-radius: 8px;
+      display:       flex;
+      align-items:   center;
+      justify-content: center;
+      font-size:     1.1rem;
+      flex-shrink:   0;
+    }
+    .contact-item-label {
+      font-size:   0.75rem;
+      font-weight: 600;
+      color:       var(--gold-dark);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 3px;
+    }
+    .contact-item-value {
+      font-size:   1rem;
+      font-weight: 500;
+      color:       var(--navy);
+    }
+    .contact-item-value a {
+      color:      var(--navy);
+      transition: color 0.2s;
+    }
+    .contact-item-value a:hover { color: var(--gold); }
+
+    .contact-chat-prompt {
+      background:    linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
+      border-radius: 10px;
+      padding:       32px;
+      margin-top:    32px;
+      border:        1px solid rgba(201,168,76,0.2);
+    }
+    .contact-chat-title {
+      font-family:   var(--font-serif);
+      font-size:     1.2rem;
+      color:         var(--white);
+      margin-bottom: 10px;
+    }
+    .contact-chat-body {
+      color:         rgba(255,255,255,0.7);
+      font-size:     0.9rem;
+      line-height:   1.7;
+      margin-bottom: 20px;
+    }
+
+    .contact-form-card {
+      background:    var(--off-white);
+      border-radius: 10px;
+      padding:       40px;
+      border:        1px solid var(--gray-light);
+    }
+
+    .contact-form-title {
+      font-family:   var(--font-serif);
+      font-size:     1.4rem;
+      color:         var(--navy);
+      margin-bottom: 24px;
+      font-weight:   600;
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+    .form-label {
+      display:       block;
+      font-size:     0.82rem;
+      font-weight:   600;
+      color:         var(--navy);
+      margin-bottom: 6px;
+      letter-spacing: 0.02em;
+    }
+    .form-input,
+    .form-textarea {
+      width:         100%;
+      padding:       11px 14px;
+      border:        1px solid var(--gray-light);
+      border-radius: var(--radius);
+      font-family:   var(--font-sans);
+      font-size:     0.92rem;
+      color:         var(--text);
+      background:    var(--white);
+      transition:    border-color 0.2s, box-shadow 0.2s;
+      outline:       none;
+    }
+    .form-input:focus,
+    .form-textarea:focus {
+      border-color: var(--gold);
+      box-shadow:   0 0 0 3px rgba(201,168,76,0.12);
+    }
+    .form-textarea {
+      resize:     vertical;
+      min-height: 110px;
+    }
+
+    /* =========================================================
+       DISCLAIMER BANNER
+    ========================================================= */
+    .disclaimer-banner {
+      background:  var(--navy-dark);
+      border-top:  2px solid var(--gold);
+      padding:     20px 0;
+    }
+    .disclaimer-inner {
+      display:     flex;
+      align-items: flex-start;
+      gap:         14px;
+    }
+    .disclaimer-icon {
+      color:      var(--gold);
+      font-size:  1.1rem;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .disclaimer-text {
+      font-size:   0.82rem;
+      color:       rgba(255,255,255,0.65);
+      line-height: 1.6;
+    }
+    .disclaimer-text strong {
+      color:        rgba(255,255,255,0.9);
+      font-weight:  600;
+      margin-right: 4px;
+    }
+
+    /* =========================================================
+       FOOTER
+    ========================================================= */
+    .footer {
+      background: var(--navy-dark);
+      padding:    48px 0 24px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .footer-grid {
+      display:               grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      gap:                   48px;
+      margin-bottom:         40px;
+    }
+
+    .footer-brand-name {
+      font-family:   var(--font-serif);
+      font-size:     1.1rem;
+      color:         var(--white);
+      margin-bottom: 10px;
+    }
+    .footer-brand-body {
+      color:       rgba(255,255,255,0.45);
+      font-size:   0.85rem;
+      line-height: 1.7;
+      max-width:   300px;
+    }
+
+    .footer-heading {
+      font-size:      0.75rem;
+      font-weight:    600;
+      color:          var(--gold);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom:  16px;
+    }
+
+    .footer-links {
+      list-style:    none;
+      display:       flex;
+      flex-direction: column;
+      gap:           10px;
+    }
+    .footer-links a {
+      color:       rgba(255,255,255,0.5);
+      font-size:   0.875rem;
+      transition:  color 0.2s;
+    }
+    .footer-links a:hover { color: var(--gold); }
+
+    .footer-bottom {
+      border-top:      1px solid rgba(255,255,255,0.06);
+      padding-top:     24px;
+      display:         flex;
+      justify-content: space-between;
+      align-items:     center;
+      flex-wrap:       wrap;
+      gap:             12px;
+    }
+    .footer-copy {
+      color:     rgba(255,255,255,0.35);
+      font-size: 0.8rem;
+    }
+    .footer-legal-links {
+      display:   flex;
+      gap:       20px;
+    }
+    .footer-legal-links a {
+      color:     rgba(255,255,255,0.35);
+      font-size: 0.8rem;
+    }
+    .footer-legal-links a:hover { color: var(--gold); }
+
+    /* =========================================================
+       RESPONSIVE — TABLET
+    ========================================================= */
+    @media (max-width: 900px) {
+      .about-grid,
+      .contact-grid { grid-template-columns: 1fr; gap: 40px; }
+
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+
+      .navbar-nav { display: none; }
+      .navbar-toggle { display: flex; }
+
+      .navbar-nav.open {
+        display:          flex;
+        flex-direction:   column;
+        position:         fixed;
+        top:              70px;
+        left:             0;
+        right:            0;
+        background:       var(--navy-dark);
+        padding:          24px;
+        gap:              20px;
+        border-top:       1px solid rgba(201,168,76,0.15);
+        z-index:          899;
+      }
+
+      .about-badge { bottom: 10px; right: 10px; }
+      .about-content { padding-right: 0; }
+    }
+
+    /* =========================================================
+       RESPONSIVE — MOBILE
+    ========================================================= */
+    @media (max-width: 600px) {
+      .hero { padding: 100px 0 60px; }
+      .hero-stats { gap: 24px; }
+
+      .trust-bar-inner { gap: 20px; }
+
+      .about, .practice-areas,
+      .process, .contact { padding: 70px 0; }
+
+      .contact-form-card { padding: 28px 20px; }
+
+      .footer-grid {
+        grid-template-columns: 1fr;
+        gap: 32px;
+      }
+
+      .footer-bottom {
+        flex-direction: column;
+        align-items:    flex-start;
+      }
+
+      .hero-actions { flex-direction: column; }
+      .btn-primary, .btn-secondary { justify-content: center; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- =========================================================
+       NAVIGATION
+  ========================================================= -->
+  <nav class="navbar" role="navigation" aria-label="Main navigation">
+    <div class="container navbar-inner">
+
+      <div class="navbar-brand">
+        <div class="navbar-logo-mark" aria-hidden="true">S&amp;A</div>
+        <div>
+          <div class="navbar-firm-name">{{ firm_name }}</div>
+          <div class="navbar-tagline">Attorneys at Law</div>
+        </div>
+      </div>
+
+      <ul class="navbar-nav" id="navMenu" role="menubar">
+        <li role="none"><a href="#about"    role="menuitem">About</a></li>
+        <li role="none"><a href="#practice" role="menuitem">Practice Areas</a></li>
+        <li role="none"><a href="#process"  role="menuitem">Our Process</a></li>
+        <li role="none"><a href="#contact"  role="menuitem">Contact</a></li>
+        <li role="none">
+          <a href="#contact" class="navbar-cta" role="menuitem">
+            Free Consultation
+          </a>
+        </li>
+      </ul>
+
+      <button
+        class="navbar-toggle"
+        id="navToggle"
+        aria-label="Toggle navigation"
+        aria-expanded="false"
+        aria-controls="navMenu"
+      >
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+    </div>
+  </nav>
+
+
+  <!-- =========================================================
+       HERO
+  ========================================================= -->
+  <section class="hero" aria-label="Hero">
+    <div class="container">
+      <div class="hero-content">
+
+        <div class="hero-badge">
+          <div class="hero-badge-dot" aria-hidden="true"></div>
+          <span>Free Consultation Available</span>
+        </div>
+
+        <h1 class="hero-title">
+          Experienced Legal<br />
+          Representation <em>You Can Trust</em>
+        </h1>
+
+        <p class="hero-subtitle">
+          At {{ firm_name }}, we fight tirelessly for your rights.
+          Our experienced attorneys bring over two decades of proven results
+          across personal injury, family law, criminal defense, and immigration.
+        </p>
+
+        <div class="hero-actions">
+          <a href="#contact" class="btn-primary">
+            &#9654; Schedule Free Consultation
+          </a>
+          <a href="#practice" class="btn-secondary">
+            View Practice Areas
+          </a>
+        </div>
+
+        <div class="hero-stats" role="list" aria-label="Firm statistics">
+          <div role="listitem">
+            <div class="hero-stat-number">20+</div>
+            <div class="hero-stat-label">Years Experience</div>
+          </div>
+          <div role="listitem">
+            <div class="hero-stat-number">$50M+</div>
+            <div class="hero-stat-label">Recovered for Clients</div>
+          </div>
+          <div role="listitem">
+            <div class="hero-stat-number">2,000+</div>
+            <div class="hero-stat-label">Cases Won</div>
+          </div>
+          <div role="listitem">
+            <div class="hero-stat-number">98%</div>
+            <div class="hero-stat-label">Client Satisfaction</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- =========================================================
+       TRUST BAR
+  ========================================================= -->
+  <div class="trust-bar" role="complementary" aria-label="Trust indicators">
+    <div class="container trust-bar-inner">
+      <div class="trust-item">
+        <span class="trust-item-icon" aria-hidden="true">&#10003;</span>
+        No Fee Unless We Win
+      </div>
+      <div class="trust-item">
+        <span class="trust-item-icon" aria-hidden="true">&#10003;</span>
+        Free 30-Minute Consultation
+      </div>
+      <div class="trust-item">
+        <span class="trust-item-icon" aria-hidden="true">&#10003;</span>
+        Available 24/7 for Emergencies
+      </div>
+      <div class="trust-item">
+        <span class="trust-item-icon" aria-hidden="true">&#10003;</span>
+        Strictly Confidential
+      </div>
+    </div>
+  </div>
+
+
+  <!-- =========================================================
+       ABOUT
+  ========================================================= -->
+  <section class="about" id="about" aria-labelledby="about-heading">
+    <div class="container">
+      <div class="about-grid">
+
+        <div class="about-visual">
+          <div class="about-image-placeholder" role="img" aria-label="Law firm office">
+            <div class="about-image-placeholder-icon" aria-hidden="true">&#9878;</div>
+            <div class="about-image-placeholder-text">Replace with firm photo</div>
+          </div>
+          <div class="about-badge" aria-label="20 years serving Houston">
+            <div class="about-badge-number">20+</div>
+            <div class="about-badge-text">Years Serving<br>Houston</div>
+          </div>
+        </div>
+
+        <div class="about-content">
+          <p class="section-label">About Our Firm</p>
+          <h2 class="section-title" id="about-heading">
+            Justice Is Not a Privilege.<br />It Is Your Right.
+          </h2>
+          <p class="about-body">
+            Founded in 2004, {{ firm_name }} has built a reputation for
+            aggressive, compassionate legal representation. We believe that
+            access to quality legal counsel should not depend on your financial
+            situation — which is why we offer contingency fee arrangements and
+            flexible payment plans.
+          </p>
+          <p class="about-body">
+            Our attorneys have tried hundreds of cases across Texas and bring
+            real courtroom experience to every client matter, large or small.
+          </p>
+
+          <div class="about-values" role="list" aria-label="Firm values">
+            <div class="about-value-item" role="listitem">
+              <div class="about-value-icon" aria-hidden="true">&#9670;</div>
+              <div class="about-value-text">
+                <strong>Client-First Approach</strong>
+                <span>Your goals drive every decision we make.</span>
+              </div>
+            </div>
+            <div class="about-value-item" role="listitem">
+              <div class="about-value-icon" aria-hidden="true">&#9670;</div>
+              <div class="about-value-text">
+                <strong>Transparent Communication</strong>
+                <span>We keep you informed at every stage of your case.</span>
+              </div>
+            </div>
+            <div class="about-value-item" role="listitem">
+              <div class="about-value-icon" aria-hidden="true">&#9670;</div>
+              <div class="about-value-text">
+                <strong>Proven Track Record</strong>
+                <span>Over $50M recovered for clients across Texas.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- =========================================================
+       PRACTICE AREAS
+  ========================================================= -->
+  <section class="practice-areas" id="practice" aria-labelledby="practice-heading">
+    <div class="container">
+
+      <div class="practice-areas-header">
+        <p class="section-label">What We Do</p>
+        <h2 class="section-title" id="practice-heading">Our Practice Areas</h2>
+        <p class="section-subtitle">
+          From personal injury to immigration, our attorneys bring deep expertise
+          across the legal matters that affect everyday Texans.
+        </p>
+      </div>
+
+      <div class="practice-grid" role="list">
+
+        <article class="practice-card" role="listitem">
+          <div class="practice-card-icon" aria-hidden="true">&#9877;</div>
+          <h3 class="practice-card-title">Personal Injury</h3>
+          <p class="practice-card-body">
+            Injured through no fault of your own? We fight to recover maximum
+            compensation for your injuries, lost wages, and suffering.
+          </p>
+          <ul class="practice-card-list" aria-label="Personal injury case types">
+            <li>Car &amp; Truck Accidents</li>
+            <li>Slip &amp; Fall Injuries</li>
+            <li>Workplace Injuries</li>
+            <li>Wrongful Death</li>
+          </ul>
+        </article>
+
+        <article class="practice-card" role="listitem">
+          <div class="practice-card-icon" aria-hidden="true">&#127968;</div>
+          <h3 class="practice-card-title">Family Law</h3>
+          <p class="practice-card-body">
+            Navigating family legal matters requires sensitivity and strength.
+            We protect your family and your future with compassionate counsel.
+          </p>
+          <ul class="practice-card-list" aria-label="Family law case types">
+            <li>Divorce &amp; Separation</li>
+            <li>Child Custody &amp; Support</li>
+            <li>Protective Orders</li>
+            <li>Adoption</li>
+          </ul>
+        </article>
+
+        <article class="practice-card" role="listitem">
+          <div class="practice-card-icon" aria-hidden="true">&#9878;</div>
+          <h3 class="practice-card-title">Criminal Defense</h3>
+          <p class="practice-card-body">
+            Facing criminal charges is terrifying. Our defense attorneys
+            protect your rights and fight for the best possible outcome.
+          </p>
+          <ul class="practice-card-list" aria-label="Criminal defense case types">
+            <li>DUI / DWI Defense</li>
+            <li>Drug Charges</li>
+            <li>Assault &amp; Felonies</li>
+            <li>Expungements</li>
+          </ul>
+        </article>
+
+        <article class="practice-card" role="listitem">
+          <div class="practice-card-icon" aria-hidden="true">&#127758;</div>
+          <h3 class="practice-card-title">Immigration Law</h3>
+          <p class="practice-card-body">
+            Your path to legal status, citizenship, or protection deserves
+            experienced guidance every step of the way.
+          </p>
+          <ul class="practice-card-list" aria-label="Immigration case types">
+            <li>Green Cards &amp; Visas</li>
+            <li>Citizenship &amp; DACA</li>
+            <li>Deportation Defense</li>
+            <li>Asylum Applications</li>
+          </ul>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- =========================================================
+       OUR PROCESS
+  ========================================================= -->
+  <section class="process" id="process" aria-labelledby="process-heading">
+    <div class="container">
+
+      <div class="process-header">
+        <p class="section-label" style="color: var(--gold);">How It Works</p>
+        <h2 class="section-title" id="process-heading">
+          Your Path to Justice Starts Here
+        </h2>
+        <p class="section-subtitle">
+          We make getting legal help simple, transparent, and stress-free.
+        </p>
+      </div>
+
+      <div class="process-steps" role="list">
+
+        <div class="process-step" role="listitem">
+          <div class="process-step-number" aria-label="Step 1">1</div>
+          <h3 class="process-step-title">Free Consultation</h3>
+          <p class="process-step-body">
+            Start a chat, call us, or fill out our contact form.
+            Your initial consultation is always free with no obligation.
+          </p>
+        </div>
+
+        <div class="process-step" role="listitem">
+          <div class="process-step-number" aria-label="Step 2">2</div>
+          <h3 class="process-step-title">Case Evaluation</h3>
+          <p class="process-step-body">
+            Our attorneys review your situation and give you an honest
+            assessment of your options and the path forward.
+          </p>
+        </div>
+
+        <div class="process-step" role="listitem">
+          <div class="process-step-number" aria-label="Step 3">3</div>
+          <h3 class="process-step-title">We Get to Work</h3>
+          <p class="process-step-body">
+            Once retained, our team builds your case with urgency, keeping
+            you informed every step of the way.
+          </p>
+        </div>
+
+        <div class="process-step" role="listitem">
+          <div class="process-step-number" aria-label="Step 4">4</div>
+          <h3 class="process-step-title">Results</h3>
+          <p class="process-step-body">
+            We fight to win — in settlement negotiations or at trial.
+            Your outcome is our only measure of success.
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- =========================================================
+       CONTACT
+  ========================================================= -->
+  <section class="contact" id="contact" aria-labelledby="contact-heading">
+    <div class="container">
+
+      <div class="contact-grid">
+
+        <!-- Contact Info Column -->
+        <div class="contact-info">
+          <p class="section-label">Get in Touch</p>
+          <h2 class="section-title" id="contact-heading">
+            Ready to Discuss<br />Your Case?
+          </h2>
+
+          <div class="contact-item">
+            <div class="contact-item-icon" aria-hidden="true">&#128222;</div>
+            <div>
+              <div class="contact-item-label">Phone</div>
+              <div class="contact-item-value">
+                <a href="tel:+17135550100">(713) 555-0100</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="contact-item">
+            <div class="contact-item-icon" aria-hidden="true">&#9993;</div>
+            <div>
+              <div class="contact-item-label">Email</div>
+              <div class="contact-item-value">
+                <a href="mailto:contact@smithlaw.com">contact@smithlaw.com</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="contact-item">
+            <div class="contact-item-icon" aria-hidden="true">&#128205;</div>
+            <div>
+              <div class="contact-item-label">Office</div>
+              <div class="contact-item-value">
+                1234 Justice Boulevard, Suite 500<br />
+                Houston, Texas 77002
+              </div>
+            </div>
+          </div>
+
+          <div class="contact-item">
+            <div class="contact-item-icon" aria-hidden="true">&#128336;</div>
+            <div>
+              <div class="contact-item-label">Office Hours</div>
+              <div class="contact-item-value">
+                Mon – Fri: 9:00 AM – 6:00 PM CST
+              </div>
+            </div>
+          </div>
+
+          <!-- Chat Prompt Card -->
+          <div class="contact-chat-prompt">
+            <h3 class="contact-chat-title">&#128172; Prefer to Chat?</h3>
+            <p class="contact-chat-body">
+              Use our AI intake assistant below — available 24/7. Tell us about
+              your situation and an attorney will follow up within 2 business hours.
+            </p>
+            <button
+              class="btn-primary"
+              onclick="window.LawBot && window.LawBot.open()"
+              aria-label="Open chat assistant"
+            >
+              Start Chat Now
+            </button>
+          </div>
+        </div>
+
+        <!-- Contact Form Column -->
+        <div class="contact-form-card">
+          <h3 class="contact-form-title">Send Us a Message</h3>
+          <form
+            id="contactForm"
+            novalidate
+            aria-label="Contact form"
+            onsubmit="handleContactForm(event)"
+          >
+            <div class="form-group">
+              <label class="form-label" for="cf-name">Full Name *</label>
+              <input
+                class="form-input"
+                type="text"
+                id="cf-name"
+                name="name"
+                placeholder="Jane Smith"
+                required
+                autocomplete="name"
+              />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="cf-email">Email Address *</label>
+              <input
+                class="form-input"
+                type="email"
+                id="cf-email"
+                name="email"
+                placeholder="jane@example.com"
+                required
+                autocomplete="email"
+              />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="cf-phone">Phone Number</label>
+              <input
+                class="form-input"
+                type="tel"
+                id="cf-phone"
+                name="phone"
+                placeholder="+1 555 123 4567"
+                autocomplete="tel"
+              />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="cf-matter">Legal Matter *</label>
+              <select class="form-input" id="cf-matter" name="matter" required>
+                <option value="">Select a practice area…</option>
+                <option value="personal-injury">Personal Injury</option>
+                <option value="family-law">Family Law</option>
+                <option value="criminal-defense">Criminal Defense</option>
+                <option value="immigration">Immigration Law</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="cf-message">Brief Description *</label>
+              <textarea
+                class="form-textarea"
+                id="cf-message"
+                name="message"
+                placeholder="Please briefly describe your legal matter…"
+                required
+              ></textarea>
+            </div>
+            <button type="submit" class="btn-primary" style="width:100%;justify-content:center;">
+              Send Message &#8594;
+            </button>
+            <p style="font-size:0.75rem;color:var(--gray);margin-top:12px;text-align:center;">
+              By submitting you agree to our privacy policy. We respond within 2 business hours.
+            </p>
+          </form>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- =========================================================
+       DISCLAIMER BANNER
+  ========================================================= -->
+  <div class="disclaimer-banner" role="note" aria-label="Legal disclaimer">
+    <div class="container disclaimer-inner">
+      <div class="disclaimer-icon" aria-hidden="true">&#9432;</div>
+      <p class="disclaimer-text">
+        <strong>Legal Disclaimer:</strong>
+        This chatbot provides information only and does not constitute legal advice.
+        Use of this website and chat tool does not create an attorney-client relationship.
+        The information provided is for general informational purposes only.
+        For advice specific to your situation, please consult a licensed attorney.
+        Past results do not guarantee future outcomes.
+      </p>
+    </div>
+  </div>
+
+
+  <!-- =========================================================
+       FOOTER
+  ========================================================= -->
+  <footer class="footer" role="contentinfo">
+    <div class="container">
+
+      <div class="footer-grid">
+
+        <div>
+          <div class="footer-brand-name">{{ firm_name }}</div>
+          <p class="footer-brand-body">
+            Providing experienced, compassionate legal representation
+            to the Houston community and all of Texas since 2004.
+          </p>
+        </div>
+
+        <div>
+          <div class="footer-heading">Practice Areas</div>
+          <ul class="footer-links">
+            <li><a href="#practice">Personal Injury</a></li>
+            <li><a href="#practice">Family Law</a></li>
+            <li><a href="#practice">Criminal Defense</a></li>
+            <li><a href="#practice">Immigration Law</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <div class="footer-heading">Quick Links</div>
+          <ul class="footer-links">
+            <li><a href="#about">About Us</a></li>
+            <li><a href="#process">Our Process</a></li>
+            <li><a href="#contact">Contact</a></li>
+            <li><a href="/admin">Staff Login</a></li>
+          </ul>
+        </div>
+
+      </div>
+
+      <div class="footer-bottom">
+        <p class="footer-copy">
+          &copy; <span id="footerYear"></span> {{ firm_name }}. All rights reserved.
+        </p>
+        <div class="footer-legal-links">
+          <a href="#" onclick="return false;">Privacy Policy</a>
+          <a href="#" onclick="return false;">Terms of Use</a>
+          <a href="#" onclick="return false;">Accessibility</a>
+        </div>
+      </div>
+
+    </div>
+  </footer>
+
+
+  <!-- =========================================================
+       WIDGET CONFIGURATION
+  ========================================================= -->
+  <script>
+    window.LawBotConfig = {
+      firmName: "{{ firm_name }}",
+      apiBase:  ""
+    };
+  </script>
+
+
+  <!-- =========================================================
+       WIDGET SCRIPT
+  ========================================================= -->
+  <script src="{{ url_for('static', filename='js/widget.js') }}" defer></script>
+
+
+  <!-- =========================================================
+       PAGE SCRIPTS
+  ========================================================= -->
+  <script>
+    // --- Footer year ---
+    document.getElementById('footerYear').textContent =
+      new Date().getFullYear();
+
+    // --- Mobile nav toggle ---
+    const navToggle = document.getElementById('navToggle');
+    const navMenu   = document.getElementById('navMenu');
+
+    navToggle.addEventListener('click', function () {
+      const isOpen = navMenu.classList.toggle('open');
+      navToggle.setAttribute('aria-expanded', isOpen);
+    });
+
+    // Close mobile nav on link click
+    navMenu.querySelectorAll('a').forEach(function (link) {
+      link.addEventListener('click', function () {
+        navMenu.classList.remove('open');
+        navToggle.setAttribute('aria-expanded', 'false');
+      });
+    });
+
+    // --- Sticky navbar shadow on scroll ---
+    window.addEventListener('scroll', function () {
+      document.querySelector('.navbar').style.boxShadow =
+        window.scrollY > 10 ? '0 2px 20px rgba(0,0,0,0.3)' : 'none';
+    });
+
+    // --- Contact form (static demo — replace with real handler) ---
+    function handleContactForm(e) {
+      e.preventDefault();
+      const btn = e.target.querySelector('[type="submit"]');
+      btn.textContent = '&#10003; Message Sent!';
+      btn.style.background = '#27ae60';
+      btn.disabled = true;
+      setTimeout(function () {
+        btn.innerHTML  = 'Send Message &#8594;';
+        btn.style.background = '';
+        btn.disabled   = false;
+        e.target.reset();
+      }, 3000);
+    }
+  </script>
+
+</body>
+</html>

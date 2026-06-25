@@ -1,0 +1,24 @@
+# =============================================================
+# LAW INTAKE BOT — Python Dependencies
+# =============================================================
+# Install all dependencies with:
+#   pip install -r requirements.txt
+# =============================================================
+
+# --- Core Framework ---
+flask==3.0.3
+
+# --- OpenAI ---
+openai==1.40.0
+
+# --- Environment Variables ---
+python-dotenv==1.0.1
+
+# --- HTTP Requests (Zapier webhook) ---
+requests==2.32.3
+
+# --- CORS Headers ---
+flask-cors==4.0.1
+
+# --- Password / Security Utilities ---
+Werkzeug==3.0.3

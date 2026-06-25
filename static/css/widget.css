@@ -1,0 +1,878 @@
+/* =============================================================
+   LAW INTAKE BOT — widget.css
+   Floating chat widget styles
+   Compatible with: templates/index.html + static/js/widget.js
+   Color palette: navy (#1a2e4a) + gold (#c9a84c)
+============================================================= */
+
+/* -------------------------------------------------------------
+   CSS VARIABLES
+------------------------------------------------------------- */
+:root {
+  --w-navy:           #1a2e4a;
+  --w-navy-dark:      #0f1e32;
+  --w-navy-light:     #243d5e;
+  --w-gold:           #c9a84c;
+  --w-gold-light:     #e2c06e;
+  --w-gold-dark:      #a8882e;
+  --w-white:          #ffffff;
+  --w-off-white:      #f7f8fa;
+  --w-gray-50:        #f9fafb;
+  --w-gray-100:       #f3f4f6;
+  --w-gray-200:       #e5e7eb;
+  --w-gray-300:       #d1d5db;
+  --w-gray-400:       #9ca3af;
+  --w-gray-500:       #6b7280;
+  --w-gray-600:       #4b5563;
+  --w-gray-700:       #374151;
+  --w-text:           #1f2937;
+
+  --w-bubble-user-bg: #1a2e4a;
+  --w-bubble-user-fg: #ffffff;
+  --w-bubble-bot-bg:  #ffffff;
+  --w-bubble-bot-fg:  #1f2937;
+
+  --w-font:           'Inter', system-ui, -apple-system, sans-serif;
+  --w-font-serif:     'Playfair Display', Georgia, serif;
+
+  --w-shadow-sm:      0 2px 8px  rgba(0,0,0,0.10);
+  --w-shadow-md:      0 4px 20px rgba(0,0,0,0.15);
+  --w-shadow-lg:      0 8px 40px rgba(0,0,0,0.22);
+  --w-shadow-xl:      0 16px 56px rgba(0,0,0,0.28);
+
+  --w-radius-sm:      6px;
+  --w-radius:         10px;
+  --w-radius-lg:      16px;
+  --w-radius-xl:      20px;
+  --w-radius-full:    9999px;
+
+  --w-launcher-size:  58px;
+  --w-width:          380px;
+  --w-height:         580px;
+  --w-offset-right:   24px;
+  --w-offset-bottom:  24px;
+
+  --w-transition:     all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  --w-transition-slow: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+
+/* -------------------------------------------------------------
+   LAUNCHER BUTTON
+   Fixed circle button — bottom-right corner
+------------------------------------------------------------- */
+#lawbot-launcher {
+  position:         fixed;
+  bottom:           var(--w-offset-bottom);
+  right:            var(--w-offset-right);
+  z-index:          9998;
+
+  width:            var(--w-launcher-size);
+  height:           var(--w-launcher-size);
+  border-radius:    50%;
+
+  background:       linear-gradient(
+                      135deg,
+                      var(--w-navy)       0%,
+                      var(--w-navy-light) 100%
+                    );
+  border:           2px solid rgba(201,168,76,0.4);
+  box-shadow:       var(--w-shadow-lg),
+                    0 0 0 0 rgba(201,168,76,0);
+
+  cursor:           pointer;
+  display:          flex;
+  align-items:      center;
+  justify-content:  center;
+  transition:       var(--w-transition);
+
+  outline:          none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+#lawbot-launcher:hover {
+  transform:    scale(1.08);
+  box-shadow:   var(--w-shadow-xl),
+                0 0 0 6px rgba(201,168,76,0.12);
+  border-color: rgba(201,168,76,0.65);
+}
+
+#lawbot-launcher:active {
+  transform: scale(0.97);
+}
+
+/* Launcher icon — chat bubble SVG inline via background */
+.lawbot-launcher-icon {
+  width:      26px;
+  height:     26px;
+  display:    flex;
+  align-items: center;
+  justify-content: center;
+  color:      var(--w-gold);
+  font-size:  1.35rem;
+  line-height: 1;
+  transition: var(--w-transition);
+}
+
+/* Close icon shown when widget is open */
+.lawbot-launcher-icon--close {
+  font-size:  1.5rem;
+  color:      var(--w-white);
+}
+
+/* Notification dot on launcher */
+.lawbot-launcher-dot {
+  position:      absolute;
+  top:           3px;
+  right:         3px;
+  width:         12px;
+  height:        12px;
+  background:    var(--w-gold);
+  border-radius: 50%;
+  border:        2px solid var(--w-white);
+  animation:     dotPulse 2s ease-in-out infinite;
+}
+
+@keyframes dotPulse {
+  0%, 100% { transform: scale(1);    opacity: 1; }
+  50%       { transform: scale(1.25); opacity: 0.8; }
+}
+
+
+/* -------------------------------------------------------------
+   CHAT WINDOW
+   Slides up from launcher position
+------------------------------------------------------------- */
+#lawbot-window {
+  position:      fixed;
+  bottom:        calc(var(--w-offset-bottom) + var(--w-launcher-size) + 12px);
+  right:         var(--w-offset-right);
+  z-index:       9997;
+
+  width:         var(--w-width);
+  height:        var(--w-height);
+  max-height:    calc(100vh - 120px);
+
+  background:    var(--w-white);
+  border-radius: var(--w-radius-xl);
+  box-shadow:    var(--w-shadow-xl);
+  border:        1px solid rgba(26,46,74,0.12);
+
+  display:       flex;
+  flex-direction: column;
+  overflow:      hidden;
+
+  /* Hidden state */
+  opacity:       0;
+  transform:     translateY(20px) scale(0.96);
+  pointer-events: none;
+  transition:    var(--w-transition-slow);
+  transform-origin: bottom right;
+}
+
+/* Open state — toggled by widget.js adding .lawbot-open to body */
+#lawbot-window.lawbot-window--open {
+  opacity:        1;
+  transform:      translateY(0) scale(1);
+  pointer-events: all;
+}
+
+
+/* -------------------------------------------------------------
+   CHAT HEADER
+------------------------------------------------------------- */
+.lawbot-header {
+  background:     linear-gradient(
+                    135deg,
+                    var(--w-navy-dark) 0%,
+                    var(--w-navy)      100%
+                  );
+  padding:        16px 18px;
+  display:        flex;
+  align-items:    center;
+  gap:            12px;
+  border-radius:  var(--w-radius-xl) var(--w-radius-xl) 0 0;
+  flex-shrink:    0;
+  border-bottom:  1px solid rgba(201,168,76,0.15);
+}
+
+.lawbot-avatar {
+  width:            40px;
+  height:           40px;
+  border-radius:    50%;
+  background:       rgba(201,168,76,0.15);
+  border:           2px solid rgba(201,168,76,0.35);
+  display:          flex;
+  align-items:      center;
+  justify-content:  center;
+  font-size:        1.1rem;
+  color:            var(--w-gold);
+  flex-shrink:      0;
+}
+
+.lawbot-header-info { flex: 1; min-width: 0; }
+
+.lawbot-header-name {
+  font-family:   var(--w-font-serif);
+  font-size:     0.95rem;
+  font-weight:   600;
+  color:         var(--w-white);
+  white-space:   nowrap;
+  overflow:      hidden;
+  text-overflow: ellipsis;
+  line-height:   1.2;
+}
+
+.lawbot-header-status {
+  display:     flex;
+  align-items: center;
+  gap:         5px;
+  margin-top:  3px;
+}
+
+.lawbot-status-dot {
+  width:         7px;
+  height:        7px;
+  border-radius: 50%;
+  background:    #34d399;
+  flex-shrink:   0;
+  animation:     statusPulse 3s ease-in-out infinite;
+}
+
+@keyframes statusPulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.6; }
+}
+
+.lawbot-status-text {
+  font-size:  0.72rem;
+  color:      rgba(255,255,255,0.6);
+  font-weight: 400;
+}
+
+.lawbot-header-close {
+  width:            30px;
+  height:           30px;
+  border-radius:    50%;
+  background:       rgba(255,255,255,0.08);
+  border:           none;
+  color:            rgba(255,255,255,0.7);
+  font-size:        1rem;
+  display:          flex;
+  align-items:      center;
+  justify-content:  center;
+  cursor:           pointer;
+  transition:       var(--w-transition);
+  flex-shrink:      0;
+  line-height:      1;
+}
+.lawbot-header-close:hover {
+  background: rgba(255,255,255,0.16);
+  color:      var(--w-white);
+}
+
+
+/* -------------------------------------------------------------
+   MESSAGES AREA
+------------------------------------------------------------- */
+.lawbot-messages {
+  flex:               1;
+  overflow-y:         auto;
+  overflow-x:         hidden;
+  padding:            16px 14px;
+  display:            flex;
+  flex-direction:     column;
+  gap:                10px;
+  scroll-behavior:    smooth;
+  background:         var(--w-off-white);
+
+  /* Custom scrollbar */
+  scrollbar-width:     thin;
+  scrollbar-color:     var(--w-gray-300) transparent;
+}
+
+.lawbot-messages::-webkit-scrollbar {
+  width: 4px;
+}
+.lawbot-messages::-webkit-scrollbar-track {
+  background: transparent;
+}
+.lawbot-messages::-webkit-scrollbar-thumb {
+  background:    var(--w-gray-300);
+  border-radius: var(--w-radius-full);
+}
+.lawbot-messages::-webkit-scrollbar-thumb:hover {
+  background: var(--w-gray-400);
+}
+
+
+/* -------------------------------------------------------------
+   WELCOME SCREEN
+   Shown before first message is sent
+------------------------------------------------------------- */
+.lawbot-welcome {
+  display:        flex;
+  flex-direction: column;
+  align-items:    center;
+  text-align:     center;
+  padding:        24px 16px 16px;
+  gap:            10px;
+}
+
+.lawbot-welcome-avatar {
+  width:            56px;
+  height:           56px;
+  border-radius:    50%;
+  background:       linear-gradient(
+                      135deg,
+                      var(--w-navy) 0%,
+                      var(--w-navy-light) 100%
+                    );
+  border:           2px solid rgba(201,168,76,0.3);
+  display:          flex;
+  align-items:      center;
+  justify-content:  center;
+  font-size:        1.5rem;
+  color:            var(--w-gold);
+  margin-bottom:    4px;
+}
+
+.lawbot-welcome-title {
+  font-family: var(--w-font-serif);
+  font-size:   1.05rem;
+  font-weight: 600;
+  color:       var(--w-navy);
+  line-height: 1.3;
+}
+
+.lawbot-welcome-subtitle {
+  font-size:   0.82rem;
+  color:       var(--w-gray-500);
+  line-height: 1.6;
+  max-width:   260px;
+}
+
+.lawbot-welcome-divider {
+  width:        40px;
+  height:       2px;
+  background:   var(--w-gold);
+  border-radius: var(--w-radius-full);
+  margin:       4px auto;
+  opacity:      0.5;
+}
+
+
+/* -------------------------------------------------------------
+   MESSAGE BUBBLES
+------------------------------------------------------------- */
+.lawbot-message {
+  display:        flex;
+  align-items:    flex-end;
+  gap:            8px;
+  max-width:      88%;
+  animation:      msgIn 0.2s ease;
+}
+
+@keyframes msgIn {
+  from {
+    opacity:   0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity:   1;
+    transform: translateY(0);
+  }
+}
+
+/* Bot message — left aligned */
+.lawbot-message--bot {
+  align-self:      flex-start;
+  flex-direction:  row;
+}
+
+/* User message — right aligned */
+.lawbot-message--user {
+  align-self:     flex-end;
+  flex-direction: row-reverse;
+}
+
+/* Small avatar shown next to bot message */
+.lawbot-message-avatar {
+  width:            26px;
+  height:           26px;
+  border-radius:    50%;
+  background:       var(--w-navy);
+  border:           1px solid rgba(201,168,76,0.25);
+  display:          flex;
+  align-items:      center;
+  justify-content:  center;
+  font-size:        0.7rem;
+  color:            var(--w-gold);
+  flex-shrink:      0;
+  margin-bottom:    2px;
+}
+
+/* Bubble */
+.lawbot-bubble {
+  padding:       10px 14px;
+  border-radius: var(--w-radius-lg);
+  font-size:     0.875rem;
+  line-height:   1.6;
+  word-break:    break-word;
+  position:      relative;
+}
+
+/* Bot bubble */
+.lawbot-message--bot .lawbot-bubble {
+  background:    var(--w-bubble-bot-bg);
+  color:         var(--w-bubble-bot-fg);
+  border:        1px solid var(--w-gray-200);
+  border-bottom-left-radius: var(--w-radius-sm);
+  box-shadow:    var(--w-shadow-sm);
+}
+
+/* User bubble */
+.lawbot-message--user .lawbot-bubble {
+  background:    var(--w-bubble-user-bg);
+  color:         var(--w-bubble-user-fg);
+  border:        1px solid rgba(201,168,76,0.15);
+  border-bottom-right-radius: var(--w-radius-sm);
+  box-shadow:    var(--w-shadow-sm);
+}
+
+/* Timestamp under bubble */
+.lawbot-message-time {
+  font-size:  0.65rem;
+  color:      var(--w-gray-400);
+  margin-top: 3px;
+  padding:    0 4px;
+  text-align: right;
+}
+
+.lawbot-message--bot .lawbot-message-time {
+  text-align: left;
+}
+
+
+/* -------------------------------------------------------------
+   TYPING INDICATOR
+   Three-dot bounce animation
+------------------------------------------------------------- */
+.lawbot-typing {
+  display:        flex;
+  align-items:    flex-end;
+  gap:            8px;
+  align-self:     flex-start;
+  max-width:      88%;
+  animation:      msgIn 0.2s ease;
+}
+
+.lawbot-typing-avatar {
+  width:            26px;
+  height:           26px;
+  border-radius:    50%;
+  background:       var(--w-navy);
+  border:           1px solid rgba(201,168,76,0.25);
+  display:          flex;
+  align-items:      center;
+  justify-content:  center;
+  font-size:        0.7rem;
+  color:            var(--w-gold);
+  flex-shrink:      0;
+  margin-bottom:    2px;
+}
+
+.lawbot-typing-bubble {
+  background:    var(--w-bubble-bot-bg);
+  border:        1px solid var(--w-gray-200);
+  border-radius: var(--w-radius-lg);
+  border-bottom-left-radius: var(--w-radius-sm);
+  padding:       12px 16px;
+  display:       flex;
+  align-items:   center;
+  gap:           5px;
+  box-shadow:    var(--w-shadow-sm);
+}
+
+.lawbot-typing-dot {
+  width:         7px;
+  height:        7px;
+  border-radius: 50%;
+  background:    var(--w-gray-400);
+  animation:     typingBounce 1.2s ease-in-out infinite;
+}
+
+.lawbot-typing-dot:nth-child(1) { animation-delay: 0s;    }
+.lawbot-typing-dot:nth-child(2) { animation-delay: 0.18s; }
+.lawbot-typing-dot:nth-child(3) { animation-delay: 0.36s; }
+
+@keyframes typingBounce {
+  0%, 60%, 100% {
+    transform: translateY(0);
+    background: var(--w-gray-300);
+  }
+  30% {
+    transform: translateY(-5px);
+    background: var(--w-gold);
+  }
+}
+
+
+/* -------------------------------------------------------------
+   INPUT AREA
+------------------------------------------------------------- */
+.lawbot-input-area {
+  padding:       12px 14px;
+  background:    var(--w-white);
+  border-top:    1px solid var(--w-gray-200);
+  display:       flex;
+  align-items:   flex-end;
+  gap:           10px;
+  flex-shrink:   0;
+}
+
+.lawbot-input-wrapper {
+  flex:          1;
+  position:      relative;
+  display:       flex;
+  align-items:   flex-end;
+}
+
+.lawbot-input {
+  width:          100%;
+  padding:        10px 14px;
+  border:         1px solid var(--w-gray-200);
+  border-radius:  var(--w-radius-full);
+  font-family:    var(--w-font);
+  font-size:      0.875rem;
+  color:          var(--w-text);
+  background:     var(--w-gray-50);
+  outline:        none;
+  resize:         none;
+  max-height:     100px;
+  min-height:     42px;
+  overflow-y:     auto;
+  line-height:    1.5;
+  transition:     border-color 0.2s, box-shadow 0.2s, background 0.2s;
+
+  scrollbar-width: thin;
+  scrollbar-color: var(--w-gray-300) transparent;
+}
+
+.lawbot-input:focus {
+  border-color: var(--w-gold);
+  box-shadow:   0 0 0 3px rgba(201,168,76,0.12);
+  background:   var(--w-white);
+}
+
+.lawbot-input::placeholder {
+  color:     var(--w-gray-400);
+  font-size: 0.85rem;
+}
+
+.lawbot-input:disabled {
+  background: var(--w-gray-100);
+  cursor:     not-allowed;
+  color:      var(--w-gray-400);
+}
+
+/* Send Button */
+.lawbot-send-btn {
+  width:            40px;
+  height:           40px;
+  border-radius:    50%;
+  background:       var(--w-navy);
+  border:           none;
+  color:            var(--w-gold);
+  font-size:        1rem;
+  display:          flex;
+  align-items:      center;
+  justify-content:  center;
+  cursor:           pointer;
+  transition:       var(--w-transition);
+  flex-shrink:      0;
+  line-height:      1;
+}
+
+.lawbot-send-btn:hover {
+  background:  var(--w-navy-light);
+  box-shadow:  var(--w-shadow-md);
+  transform:   scale(1.05);
+}
+
+.lawbot-send-btn:active {
+  transform: scale(0.97);
+}
+
+.lawbot-send-btn:disabled {
+  background: var(--w-gray-200);
+  color:      var(--w-gray-400);
+  cursor:     not-allowed;
+  transform:  none;
+  box-shadow: none;
+}
+
+
+/* -------------------------------------------------------------
+   DISCLAIMER FOOTER
+------------------------------------------------------------- */
+.lawbot-disclaimer {
+  padding:       8px 14px 10px;
+  background:    var(--w-white);
+  border-top:    1px solid var(--w-gray-100);
+  text-align:    center;
+  flex-shrink:   0;
+}
+
+.lawbot-disclaimer p {
+  font-size:   0.65rem;
+  color:       var(--w-gray-400);
+  line-height: 1.5;
+}
+
+.lawbot-disclaimer a {
+  color:       var(--w-gray-400);
+  font-weight: 500;
+}
+.lawbot-disclaimer a:hover {
+  color: var(--w-gold-dark);
+}
+
+
+/* -------------------------------------------------------------
+   COMPLETION / THANK YOU SCREEN
+   Shown after lead is successfully captured
+------------------------------------------------------------- */
+.lawbot-completion {
+  display:        flex;
+  flex-direction: column;
+  align-items:    center;
+  justify-content: center;
+  text-align:     center;
+  padding:        32px 24px;
+  gap:            14px;
+  flex:           1;
+  animation:      msgIn 0.3s ease;
+}
+
+.lawbot-completion-icon {
+  width:            64px;
+  height:           64px;
+  border-radius:    50%;
+  background:       linear-gradient(
+                      135deg,
+                      rgba(16,185,129,0.12) 0%,
+                      rgba(16,185,129,0.06) 100%
+                    );
+  border:           2px solid rgba(16,185,129,0.3);
+  display:          flex;
+  align-items:      center;
+  justify-content:  center;
+  font-size:        1.8rem;
+  margin-bottom:    4px;
+  animation:        checkIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes checkIn {
+  from { transform: scale(0.5); opacity: 0; }
+  to   { transform: scale(1);   opacity: 1; }
+}
+
+.lawbot-completion-title {
+  font-family:   var(--w-font-serif);
+  font-size:     1.1rem;
+  font-weight:   700;
+  color:         var(--w-navy);
+  line-height:   1.3;
+}
+
+.lawbot-completion-body {
+  font-size:   0.85rem;
+  color:       var(--w-gray-500);
+  line-height: 1.7;
+  max-width:   260px;
+}
+
+.lawbot-completion-score {
+  display:       inline-flex;
+  align-items:   center;
+  gap:           6px;
+  padding:       6px 16px;
+  border-radius: var(--w-radius-full);
+  font-size:     0.78rem;
+  font-weight:   600;
+  background:    rgba(201,168,76,0.1);
+  color:         var(--w-gold-dark);
+  border:        1px solid rgba(201,168,76,0.25);
+}
+
+.lawbot-completion-phone {
+  font-size:   0.8rem;
+  color:       var(--w-gray-500);
+}
+
+.lawbot-completion-phone a {
+  color:       var(--w-navy);
+  font-weight: 600;
+}
+.lawbot-completion-phone a:hover {
+  color: var(--w-gold-dark);
+}
+
+
+/* -------------------------------------------------------------
+   ERROR STATE IN MESSAGES
+------------------------------------------------------------- */
+.lawbot-error-msg .lawbot-bubble {
+  background:  #fef2f2;
+  border-color: rgba(239,68,68,0.25);
+  color:       #b91c1c;
+  font-size:   0.82rem;
+}
+
+
+/* -------------------------------------------------------------
+   PROGRESS INDICATOR
+   Shows collection progress (e.g. "Step 2 of 4")
+------------------------------------------------------------- */
+.lawbot-progress {
+  display:       flex;
+  align-items:   center;
+  gap:           8px;
+  padding:       8px 14px;
+  background:    rgba(201,168,76,0.06);
+  border-bottom: 1px solid rgba(201,168,76,0.12);
+  flex-shrink:   0;
+}
+
+.lawbot-progress-bar-track {
+  flex:          1;
+  height:        3px;
+  background:    var(--w-gray-200);
+  border-radius: var(--w-radius-full);
+  overflow:      hidden;
+}
+
+.lawbot-progress-bar-fill {
+  height:        100%;
+  background:    var(--w-gold);
+  border-radius: var(--w-radius-full);
+  transition:    width 0.4s ease;
+}
+
+.lawbot-progress-label {
+  font-size:   0.68rem;
+  color:       var(--w-gray-400);
+  white-space: nowrap;
+  font-weight: 500;
+}
+
+
+/* -------------------------------------------------------------
+   MOBILE — FULL SCREEN WIDGET
+   On screens < 480px the chat takes full viewport
+------------------------------------------------------------- */
+@media (max-width: 480px) {
+  :root {
+    --w-offset-right:  16px;
+    --w-offset-bottom: 16px;
+    --w-launcher-size: 54px;
+  }
+
+  #lawbot-window {
+    position:   fixed;
+    bottom:     0;
+    right:      0;
+    left:       0;
+    top:        0;
+    width:      100%;
+    height:     100%;
+    max-height: 100%;
+    border-radius: 0;
+    border:     none;
+  }
+
+  .lawbot-header {
+    border-radius: 0;
+    padding-top:   calc(16px + env(safe-area-inset-top));
+  }
+
+  .lawbot-input-area {
+    padding-bottom: calc(12px + env(safe-area-inset-bottom));
+  }
+
+  .lawbot-disclaimer {
+    padding-bottom: calc(8px + env(safe-area-inset-bottom));
+  }
+}
+
+
+/* -------------------------------------------------------------
+   TABLET ADJUSTMENTS (481px — 768px)
+------------------------------------------------------------- */
+@media (min-width: 481px) and (max-width: 768px) {
+  :root {
+    --w-width:  340px;
+    --w-height: 520px;
+  }
+}
+
+
+/* -------------------------------------------------------------
+   REDUCED MOTION
+------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  #lawbot-launcher,
+  #lawbot-window,
+  .lawbot-message,
+  .lawbot-typing,
+  .lawbot-completion,
+  .lawbot-completion-icon,
+  .lawbot-bubble {
+    animation:  none !important;
+    transition: none !important;
+  }
+
+  .lawbot-typing-dot {
+    animation: none !important;
+    background: var(--w-gray-400) !important;
+  }
+
+  .lawbot-status-dot {
+    animation: none !important;
+  }
+
+  .lawbot-launcher-dot {
+    animation: none !important;
+  }
+}
+
+
+/* -------------------------------------------------------------
+   HIGH CONTRAST MODE
+------------------------------------------------------------- */
+@media (forced-colors: active) {
+  #lawbot-launcher {
+    border: 2px solid ButtonText;
+  }
+
+  .lawbot-bubble {
+    border: 1px solid ButtonText;
+  }
+
+  .lawbot-input {
+    border: 1px solid ButtonText;
+  }
+}
+
+
+/* -------------------------------------------------------------
+   FOCUS VISIBLE — accessibility
+------------------------------------------------------------- */
+#lawbot-launcher:focus-visible,
+.lawbot-send-btn:focus-visible,
+.lawbot-header-close:focus-visible,
+.lawbot-input:focus-visible {
+  outline:        2px solid var(--w-gold);
+  outline-offset: 2px;
+}

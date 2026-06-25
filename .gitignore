@@ -1,0 +1,47 @@
+# =============================================================
+# LAW INTAKE BOT — .gitignore
+# =============================================================
+
+# --- Environment & Secrets (NEVER commit these) ---
+.env
+*.env
+.env.*
+
+# --- Database (contains real lead/client data) ---
+database/
+*.db
+*.sqlite
+*.sqlite3
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+.Python
+
+# --- Virtual Environment ---
+venv/
+.venv/
+env/
+ENV/
+
+# --- OS Files ---
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# --- IDE / Editor ---
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# --- Logs ---
+*.log
+logs/
+
+# --- Distribution / Build ---
+dist/
+build/
+*.egg-info/
