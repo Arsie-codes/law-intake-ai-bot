@@ -1,0 +1,5 @@
+[deploy]
+startCommand = "gunicorn app:app --workers 2 --timeout 120"
+healthcheckPath = "/health"
+healthcheckTimeout = 30
+restartPolicyType = "on_failure"
