@@ -9,7 +9,7 @@
 flask==3.0.3
 
 # --- OpenAI ---
-openai==1.40.0
+openai==1.57.0
 
 # --- Environment Variables ---
 python-dotenv==1.0.1
