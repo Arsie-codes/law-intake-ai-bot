@@ -1510,7 +1510,9 @@ if __name__ == "__main__":
     )
     print(f"{'=' * 56}\n")
 
+    port = int(os.getenv("PORT", 5000))
     app.run(
+        host="0.0.0.0",
         debug=(os.getenv("FLASK_ENV") == "development"),
-        port=5000
+        port=port
     )

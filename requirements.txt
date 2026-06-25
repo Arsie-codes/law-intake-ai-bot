@@ -19,6 +19,7 @@ requests==2.32.3
 
 # --- CORS Headers ---
 flask-cors==4.0.1
+gunicorn==21.2.0
 
 # --- Password / Security Utilities ---
 Werkzeug==3.0.3
